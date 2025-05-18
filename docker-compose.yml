@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: .
+    container_name: telegram_bot
+    environment:
+      TELEGRAM_TOKEN_NEW: ${TELEGRAM_TOKEN_NEW}
+      KINOPOISK_API_KEY: ${KINOPOISK_API_KEY}
+    restart: unless-stopped
