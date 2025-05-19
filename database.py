@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import select
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional
 
 engine = create_async_engine('sqlite+aiosqlite:///cinema_bot.db')
@@ -17,7 +17,9 @@ class SearchHistory(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int]
     query: Mapped[str]
-    timestamp: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    timestamp: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.utcnow() + timedelta(hours=3)
+    )
     movie_title: Mapped[str]
     movie_id: Mapped[str]
 
@@ -88,5 +90,6 @@ async def get_user_stats(user_id: int) -> List[MovieStats]:
             select(MovieStats)
             .where(MovieStats.user_id == user_id)
             .order_by(MovieStats.times_shown.desc())
+            .limit(10)
         )
         return result.scalars().all()

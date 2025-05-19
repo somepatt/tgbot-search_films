@@ -373,6 +373,7 @@ async def handle_movie_search(message: Message):
         # Get first movie
         movie = movies[0]
         await update_movie_stats(message.from_user.id, movie.movie_id, movie.title)
+        await add_search_history(message.from_user.id, message.text, movie.title, movie.movie_id)
 
         # Create response for first movie
         response = f"🎬 {movie.title}\n\n"
